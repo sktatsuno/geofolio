@@ -5,6 +5,7 @@ import { ColumnLayer, IconLayer } from '@deck.gl/layers';
 
 const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAccessToken}) => {
     const [hoverInfo, setHoverInfo] = React.useState("");
+    const [onClickInfo, setOnClickInfo] = React.useState("");
 
     const sourceData = [{
         "icon_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
@@ -17,7 +18,8 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
         "location": 0,
         "notes": "Traffic stop; backed car into approaching officer  knocked him to ground",
         "categories": "Shot - Wounded/Injured||Officer Involved Incident||Officer Involved Shooting - subject/suspect/perpetrator shot||Drug involvement",
-        "message": "AAPL 57%"
+        "message": "AAPL 57%",
+        "symbol": "AAPL"
        },
        {
         "icon_url": "https://i1.wp.com/eodhistoricaldata.com/financial-apis-blog/wp-content/uploads/2019/04/MSFT.png",
@@ -30,7 +32,8 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
         "location": 0,
         "notes": "Pit gang suspect fired into rival Grounds territory  hit bystander",
         "categories": "Shot - Wounded/Injured||Gang involvement",
-        "message": "MSFT 43%"
+        "message": "MSFT 43%",
+        "symbol": "MSFT"
        }];
     const layers = [
         new IconLayer({
@@ -50,7 +53,11 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
             sizeScale: 15,
             getPosition: d => [d.longitude, d.latitude],
              // Update app state
-            onHover: info => setHoverInfo(info)
+            onHover: info => setHoverInfo(info),
+            onClick: info => {
+                console.log(info.object.symbol)
+                setOnClickInfo(info)
+            }
         }),
         new ColumnLayer({
             id: 'column',
@@ -82,9 +89,12 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
           controller={true}
           layers={layers} >
           {hoverInfo.object && (
-            <div class="tooltip" style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x + 25, top: hoverInfo.y + 25, fontFamily: 'arial'}}>
+            <div className="tooltip" style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x + 25, top: hoverInfo.y + 25, fontFamily: 'arial'}}>
               { hoverInfo.object.message }
             </div>
+          )}
+          {onClickInfo.object && (
+            window.open(`https://finance.yahoo.com/quote/${onClickInfo.object.symbol}/`)
           )}
         </DeckGL>
     </ReactMapGL>
