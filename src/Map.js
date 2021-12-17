@@ -1,9 +1,11 @@
-import * as React from "react";
+import React from "react";
 import ReactMapGL, {Marker} from 'react-map-gl';
 import DeckGL from '@deck.gl/react';
 import { ColumnLayer, IconLayer } from '@deck.gl/layers';
 
 const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAccessToken}) => {
+    const [hoverInfo, setHoverInfo] = React.useState("");
+
     const sourceData = [{
         "icon_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
         "incident_id": 893251,
@@ -14,7 +16,8 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
         "longitude": -122.0090,
         "location": 0,
         "notes": "Traffic stop; backed car into approaching officer  knocked him to ground",
-        "categories": "Shot - Wounded/Injured||Officer Involved Incident||Officer Involved Shooting - subject/suspect/perpetrator shot||Drug involvement"
+        "categories": "Shot - Wounded/Injured||Officer Involved Incident||Officer Involved Shooting - subject/suspect/perpetrator shot||Drug involvement",
+        "message": "AAPL 57%"
        },
        {
         "icon_url": "https://i1.wp.com/eodhistoricaldata.com/financial-apis-blog/wp-content/uploads/2019/04/MSFT.png",
@@ -26,7 +29,8 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
         "longitude": -75.2238,
         "location": 0,
         "notes": "Pit gang suspect fired into rival Grounds territory  hit bystander",
-        "categories": "Shot - Wounded/Injured||Gang involvement"
+        "categories": "Shot - Wounded/Injured||Gang involvement",
+        "message": "MSFT 43%"
        }];
     const layers = [
         new IconLayer({
@@ -44,7 +48,9 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
             getSize: 5 * (2/viewport.zoom),
             pickable: true,
             sizeScale: 15,
-            getPosition: d => [d.longitude, d.latitude]
+            getPosition: d => [d.longitude, d.latitude],
+             // Update app state
+            onHover: info => setHoverInfo(info)
         }),
         new ColumnLayer({
             id: 'column',
@@ -70,21 +76,17 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
         {...viewport}
         onViewportChange={onViewportChange}
         >
-        {/* <Marker 
-        latitude={37.3346} 
-        longitude={-122.0090} >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Apple-logo.png"
-              width={50}
-              height={50}
-              />
-        </Marker> */}
 
         <DeckGL
           initialViewState={viewport}
           controller={true}
-          layers={layers}
-        />
+          layers={layers} >
+          {hoverInfo.object && (
+            <div class="tooltip" style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x + 25, top: hoverInfo.y + 25, fontFamily: 'arial'}}>
+              { hoverInfo.object.message }
+            </div>
+          )}
+        </DeckGL>
     </ReactMapGL>
     );
 };
