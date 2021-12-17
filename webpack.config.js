@@ -30,8 +30,8 @@ module.exports = {
               devMode ? "style-loader" : MiniCssExtractPlugin.loader,
               // Translates CSS into CommonJS
               "css-loader",
-              // Compiles Sass to CSS
-              "sass-loader",
+              // // Compiles Sass to CSS
+              // "sass-loader",
             ],
           }
         ]
@@ -40,8 +40,8 @@ module.exports = {
       new HtmlWebpackPlugin({
         title: "Development",
         template: "./src/index.html",
-      }),
-    ],
+      })
+    ].concat(devMode ? [] : [new MiniCssExtractPlugin()]),
     devServer: {
       static: {
         directory: path.resolve(__dirname, 'build'),
