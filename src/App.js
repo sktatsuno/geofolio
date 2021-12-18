@@ -1,5 +1,6 @@
 import React from "react";
 import Map from './Map.js';
+import StockForm from './StockForm.js';
 
 const App = () => {
     const [viewport, setViewport] = React.useState({
@@ -20,7 +21,9 @@ const App = () => {
             mapStyle={mapStyle}
             mapboxApiAccessToken={mapboxApiAccessToken}
             />
+            <StockForm></StockForm>
         </div>
+        
     );
 };
 
