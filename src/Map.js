@@ -23,7 +23,7 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
             getSize: 5 * (2/viewport.zoom),
             pickable: true,
             sizeScale: 15,
-            getPosition: d => [d.longitude, d.latitude],
+            getPosition: d => [+d.longitude, +d.latitude],
              // Update app state
             onHover: info => setHoverInfo(info),
             onClick: info => {
@@ -34,8 +34,8 @@ const Map = ({ width, height, viewport, onViewportChange, mapStyle, mapboxApiAcc
         new ColumnLayer({
             id: 'column',
             data: holdings,
-            getPosition: d => [d.longitude, d.latitude],
-            getElevation: d => d.weight * 100,
+            getPosition: d => [+d.longitude, +d.latitude],
+            getElevation: d => +d.weight * 100,
             getFillColor: d => [135,206,235],
             getLineColor: [0, 0, 0],
             elevationScale: 50000,
